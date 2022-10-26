@@ -10,8 +10,21 @@
 </head>
 
 <body>
-    <div class="container">
+    <header class="message-header" id="messageContainer"></header>
+    <div class="darken">
+        <div class="play-again" id="playAgain">
+            <h3 id="winLoseMessage">You won!</h3>
+            <div id="wordAnswer"></div>
+            <p>Would you like to play again?</p>
+            <div class="play-again__buttons">
+                <button id="btnYes" class="green">Yes</button>
+                <button id="btnNo" class="red">No</button>
+            </div>
+        </div>
+    </div>
 
+
+    <div class="container">
         <svg width="559" height="640" viewBox="0 0 549 634" fill="none" xmlns="http://www.w3.org/2000/svg"
             class="hangman" id="hangmanSVG">
             <path d="M1 633C29.6667 594.667 121.4 518.6 259 521C396.6 523.4 464.333 596.667 481 633" stroke="black"
@@ -28,13 +41,13 @@
             <line x1="511.449" y1="169.78" x2="533.449" y2="214.78" stroke="black" class="man" />
         </svg>
 
-        <div class="guess-string" id="guessString">_ _ _ _ _ _</div>
+        <div class="guess-string" id="guessString"></div>
         <form class="guess-form" id="guessForm">
-            <input type="text" name="guess">
+            <input type="text" name="guess" autocomplete="off">
             <button type="submit">Guess</button>
         </form>
 
-        <div class="guessed-letters" id="guessedLetters">ABCDEFGHJKLÖPOIUYTRE</div>
+        <div class="guessed-letters" id="guessedLetters"></div>
     </div>
 
     <!-- <side class="message-container" id="messageContainer">

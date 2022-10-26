@@ -472,23 +472,21 @@ const words = [
     "nerve"]
 
 let word;
-
 let wordArray;
-
 let guessedLetters;
-
 let answerArray;
-
+let lives;
 
 function newGame() {
 
     word = words[Math.floor(Math.random() * words.length)];
 
-    console.log(word);
-
     wordArray = [...word];
 
     guessedLetters = [];
+
+    lives = 0;
+
 
     //recursive loop
     const fillUnderscore = (array, n) => {
@@ -499,9 +497,9 @@ function newGame() {
         return array;
     }
     answerArray = fillUnderscore([], wordArray.length);
-    console.log(answerArray)
 
     renderText();
+
 
 }
 
@@ -518,19 +516,19 @@ guessFormEl.onsubmit = function runGame(event) {
 
 
     if (guess.length > 1) {
-        return errorMessage('You can only guess ONE letter');
+        return message('You can only guess ONE letter', 'orange');
     }
     if (!guess.match(/[a-z]/i)) {
-        return errorMessage('You can only guess letters');
+        return message('You can only guess letters', 'orange');
 
     }
     if (guessedLetters.includes(guess)) {
-        return errorMessage('You already guessed ' + guess);
+        return message('You already guessed ' + guess, 'orange');
     }
 
-    guessedLetters.push(guess);
-    console.log(answerArray.join(''));
 
+
+    guessedLetters.push(guess);
 
     if (wordArray.includes(guess)) {
 
@@ -543,18 +541,19 @@ guessFormEl.onsubmit = function runGame(event) {
 
                 answerArray.splice(index, 1, guess);
 
-                wordArrayCopy.splice(index, 1);
+                //we replace the letter with _ so it doesnt just replace the same one again (to check if multiple of same letter)
+                wordArrayCopy.splice(index, 1, '_');
 
-                addAnswerArray(guess);
+                addAnswerArray();
             }
         }
         addAnswerArray();
 
-        message('Your guess was right!', true);
+        message('Your guess was right!', 'green');
 
         if (answerArray.join('') === word) {
 
-            message('You won!!!', true);
+            message('You won!!!', 'green');
 
             playAgainMessage(true);
 
@@ -562,7 +561,7 @@ guessFormEl.onsubmit = function runGame(event) {
 
     } else {
 
-        message('Your guess was wrong, you lost a heart', false);
+        message('Your guess was wrong, you lost a heart', 'red');
 
         drawHangman();
     }
@@ -577,37 +576,36 @@ guessFormEl.onsubmit = function runGame(event) {
 
 const messageContainer = document.getElementById('messageContainer');
 
-function message(string, correct) {
+function message(string, color) {
 
-    // let message = document.createElement('div');
-    // message.classList.add('message');
-    // message.innerHTML = string;
+    let message = document.createElement('div');
+    message.classList.add('message');
+    message.innerHTML = string;
 
-    // if (correct) {
-    //     message.classList.add('green');
+    message.classList.add(color);
 
-    // } else {
-    //     message.classList.add('red');
+    messageContainer.append(message);
 
-    // }
+    setTimeout(() => {
+        message.style.transform = 'translateX(0%)';
+    }, 0);
 
-    // messageContainer.append(message);
+    setTimeout(() => {
 
-    console.log(string);
+        message.style.opacity = '0';
+        setTimeout(() => {
+            message.remove();
+        }, 200);
+
+    }, 2000);
+
 
 }
 
-function errorMessage(string) {
-    console.log('ERR: ' + string);
-}
 
-function playAgainMessage(won) {
-    console.log('playAgainMessage - won: ' + won);
-}
 
 const hangmanSVG = document.getElementById('hangmanSVG')
 
-let lives = 0;
 
 function drawHangman() {
 
@@ -624,14 +622,56 @@ function drawHangman() {
 
 }
 
-
-
-
 function renderText() {
     const guessStringEl = document.getElementById('guessString');
     const guessedLettersEl = document.getElementById('guessedLetters');
 
     guessStringEl.innerHTML = answerArray.join('');
     guessedLettersEl.innerHTML = guessedLetters.join('').toUpperCase();
+
+}
+
+
+function playAgainMessage(won) {
+
+    const darkenElement = document.querySelector('.darken');
+    const winLoseMessage = document.getElementById('winLoseMessage');
+    const answerText = document.getElementById('wordAnswer');
+
+
+    const playAgainButton = document.getElementById('btnYes');
+    const dontPlayAgainButton = document.getElementById('btnNo');
+
+    if (won) {
+        winLoseMessage.innerHTML = 'You won!'
+        answerText.innerHTML = '';
+
+    } else {
+        winLoseMessage.innerHTML = 'You lost!'
+        answerText.innerHTML = `The word was ${word}`;
+    }
+
+    darkenElement.style.display = 'block';
+
+    playAgainButton.onclick = () => {
+        newGame()
+        function clearHangman(n = 0) {
+            let line = hangmanSVG.children[n];
+            if (line) {
+                line.style.visibility = 'hidden';
+                n++;
+                clearHangman(n);
+            }
+        }
+        clearHangman();
+
+        darkenElement.style.display = 'none';
+
+    }
+
+    dontPlayAgainButton.onclick = () => {
+        window.open('https://github.com/FabianGenell/Hangman');
+    }
+
 
 }
