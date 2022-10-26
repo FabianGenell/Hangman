@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <svg width="559" height="640" viewBox="0 0 549 634" fill="none" xmlns="http://www.w3.org/2000/svg"
+            class="hangman" id="hangmanSVG">
+            <path d="M1 633C29.6667 594.667 121.4 518.6 259 521C396.6 523.4 464.333 596.667 481 633" stroke="black"
+                class="hill" />
+            <line x1="260.5" y1="518.003" x2="257.429" y2="1.00336" stroke="black" class="structure" />
+            <line x1="259" y1="0.5" x2="511" y2="0.5" stroke="black" class="structure" />
+            <line x1="327.354" y1="1.35355" x2="257.354" y2="71.3536" stroke="black" class="structure" />
+            <line x1="510.5" y1="71" x2="510.5" y2="1" stroke="black" />
+            <circle cx="510.5" cy="109.5" r="38" stroke="black" class="man" />
+            <line x1="510.5" y1="260" x2="510.5" y2="148" stroke="black" class="man" />
+            <line x1="476.562" y1="321.76" x2="510.562" y2="259.76" stroke="black" class="man" />
+            <line x1="532.529" y1="322.167" x2="510.529" y2="260.167" stroke="black" class="man" />
+            <line x1="511.404" y1="170.295" x2="481.404" y2="211.295" stroke="black" class="man" />
+            <line x1="511.449" y1="169.78" x2="533.449" y2="214.78" stroke="black" class="man" />
+        </svg>
+
+        <div class="guess-string" id="guessString"></div>
+        <form class="guess-form" id="guessForm">
+            <input type="text" name="guess">
+            <button type="submit">Guess</button>
+        </form>
+    </div>
+
+    <side class="message-container" id="messageContainer">
+
+        <div class="message red">This is a message</div>
+        <div class="message red">This is a message</div>
+        <div class="message green">This is a message</div>
+
+
+    </side>
+
+    <script src="hangman.js"></script>
+</body>
+
+</html>
