@@ -471,116 +471,129 @@ const words = [
     "needle",
     "nerve"]
 
+let word;
 
+let wordArray;
+
+let guessedLetters;
+
+let answerArray;
 
 
 function newGame() {
 
-    let word = words[Math.floor(Math.random(words.length))];
+    word = words[Math.floor(Math.random() * words.length)];
 
-    let wordArray = [...word];
+    console.log(word);
 
-    let guessedLetters = [];
+    wordArray = [...word];
 
-    let lives = 10;
+    guessedLetters = [];
 
     //recursive loop
     const fillUnderscore = (array, n) => {
         if (array.length !== n) {
-            let newArray = [...array, '_'];
-            fillUnderscore(newArray, n);
+            array.push('_');
+            fillUnderscore(array, n);
         }
+        return array;
     }
-    let answerArray = fillUnderscore([], wordArray.length);
+    answerArray = fillUnderscore([], wordArray.length);
+    console.log(answerArray)
 
-    function runGame(running) {
+    renderText();
 
-        const letterGuessed = () => {
-
-            let guess;
-
-            guess = window.prompt('Guess a letter').trim();
-
-            if (guess.length > 1) {
-                errorMessage('You can only guess ONE letter');
-                return letterGuessed();
-            }
-            if (!guess.match(/[a-z]/i)) {
-                errorMessage('You can only guess letters');
-                return letterGuessed();
-
-            }
-            if (guessedLetters.includes(guess)) {
-                errorMessage('You already guessed ' + guess);
-                return letterGuessed();
-            }
-
-            guessedLetters.push(guess);
-
-            return guess;
-        }
-
-        let letter = letterGuessed();
-
-        if (wordArray.includes(letter)) {
-
-            let wordArrayCopy = [...wordArray];
-
-            function addAnswerArray() {
-                if (wordArrayCopy.includes(letter)) {
-
-                    let index = wordArrayCopy.indexOf(letter);
-
-                    answerArray.splice(index, 1, letter);
-
-                    wordArrayCopy.splice(index, 1);
-
-                    addAnswerArray(letter);
-                }
-            }
-            addAnswerArray();
-
-            message('Your guess was right!', true);
-
-            if (answerArray.join('') === word) {
-
-                message('You won!!!', true);
-
-                playAgainMessage(true);
-
-            } else {
-                runGame()
-            }
-
-
-        } else {
-
-            message('Your guess was wrong, you lost a heart', false);
-
-            drawHangman();
-        }
-
-
-    }
 }
+
+newGame();
+
+const guessFormEl = document.getElementById('guessForm');
+
+guessFormEl.onsubmit = function runGame(event) {
+
+    event.preventDefault();
+
+    let guess = guessFormEl.elements.guess.value.trim();
+    guessFormEl.elements.guess.value = '';
+
+
+    if (guess.length > 1) {
+        return errorMessage('You can only guess ONE letter');
+    }
+    if (!guess.match(/[a-z]/i)) {
+        return errorMessage('You can only guess letters');
+
+    }
+    if (guessedLetters.includes(guess)) {
+        return errorMessage('You already guessed ' + guess);
+    }
+
+    guessedLetters.push(guess);
+    console.log(answerArray.join(''));
+
+
+    if (wordArray.includes(guess)) {
+
+        let wordArrayCopy = [...wordArray];
+
+        function addAnswerArray() {
+            if (wordArrayCopy.includes(guess)) {
+
+                let index = wordArrayCopy.indexOf(guess);
+
+                answerArray.splice(index, 1, guess);
+
+                wordArrayCopy.splice(index, 1);
+
+                addAnswerArray(guess);
+            }
+        }
+        addAnswerArray();
+
+        message('Your guess was right!', true);
+
+        if (answerArray.join('') === word) {
+
+            message('You won!!!', true);
+
+            playAgainMessage(true);
+
+        }
+
+    } else {
+
+        message('Your guess was wrong, you lost a heart', false);
+
+        drawHangman();
+    }
+
+    renderText();
+}
+
+
+
+
+
 
 const messageContainer = document.getElementById('messageContainer');
 
 function message(string, correct) {
 
-    let message = document.createElement(div);
-    message.classList.add('message');
-    message.innerHTML = string;
+    // let message = document.createElement('div');
+    // message.classList.add('message');
+    // message.innerHTML = string;
 
-    if (correct) {
-        message.classList.add('green');
+    // if (correct) {
+    //     message.classList.add('green');
 
-    } else {
-        message.classList.add('red');
+    // } else {
+    //     message.classList.add('red');
 
-    }
+    // }
 
-    messageContainer.append(message);
+    // messageContainer.append(message);
+
+    console.log(string);
 
 }
 
@@ -599,14 +612,26 @@ let lives = 0;
 function drawHangman() {
 
     let line = hangmanSVG.children[lives];
+    line.style.visibility = 'visible';
 
-    if (!line) {
+
+    lives++;
+
+    if (!hangmanSVG.children[lives]) {
         playAgainMessage(false);
-        return;
     }
 
-    line.style.visibility = visible;
 
-    runGame();
+}
+
+
+
+
+function renderText() {
+    const guessStringEl = document.getElementById('guessString');
+    const guessedLettersEl = document.getElementById('guessedLetters');
+
+    guessStringEl.innerHTML = answerArray.join('');
+    guessedLettersEl.innerHTML = guessedLetters.join('').toUpperCase();
 
 }
