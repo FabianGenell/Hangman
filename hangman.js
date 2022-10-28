@@ -520,13 +520,10 @@ guessFormEl.onsubmit = function runGame(event) {
     }
     if (!guess.match(/[a-z]/i)) {
         return message('You can only guess letters', 'orange');
-
     }
     if (guessedLetters.includes(guess)) {
         return message('You already guessed ' + guess, 'orange');
     }
-
-
 
     guessedLetters.push(guess);
 
@@ -535,14 +532,15 @@ guessFormEl.onsubmit = function runGame(event) {
         let wordArrayCopy = [...wordArray];
 
         function addAnswerArray() {
+
+            let index = wordArrayCopy.indexOf(guess);
+
+            answerArray.splice(index, 1, guess);
+
+            //we replace the letter with _ so it doesnt just replace the same one again (to check if multiple of same letter)
+            wordArrayCopy.splice(index, 1, '_');
+
             if (wordArrayCopy.includes(guess)) {
-
-                let index = wordArrayCopy.indexOf(guess);
-
-                answerArray.splice(index, 1, guess);
-
-                //we replace the letter with _ so it doesnt just replace the same one again (to check if multiple of same letter)
-                wordArrayCopy.splice(index, 1, '_');
 
                 addAnswerArray();
             }
@@ -558,7 +556,6 @@ guessFormEl.onsubmit = function runGame(event) {
             playAgainMessage(true);
 
         }
-
     } else {
 
         message('Your guess was wrong, you lost a heart', 'red');
@@ -576,13 +573,12 @@ guessFormEl.onsubmit = function runGame(event) {
 
 const messageContainer = document.getElementById('messageContainer');
 
-function message(string, color) {
+function message(string, color = 'green') {
 
     let message = document.createElement('div');
-    message.classList.add('message');
+    message.classList.add('message', color);
     message.innerHTML = string;
 
-    message.classList.add(color);
 
     messageContainer.append(message);
 
@@ -600,6 +596,8 @@ function message(string, color) {
     }, 2000);
 
 
+    //the browser ONLY agrees to play all transitions if this function is called - WHY?
+    return getComputedStyle(message).transform;
 }
 
 
@@ -611,7 +609,6 @@ function drawHangman() {
 
     let line = hangmanSVG.children[lives];
     line.style.visibility = 'visible';
-
 
     lives++;
 
@@ -636,7 +633,7 @@ function playAgainMessage(won) {
 
     const darkenElement = document.querySelector('.darken');
     const winLoseMessage = document.getElementById('winLoseMessage');
-    const answerText = document.getElementById('wordAnswer');
+    const answerText = document.getElementById('answerText');
 
 
     const playAgainButton = document.getElementById('btnYes');
